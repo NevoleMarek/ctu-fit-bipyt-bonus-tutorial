@@ -198,7 +198,7 @@ X_train.head()
 # Modeling
 
 ```python
-clf = DecisionTreeClassifier().fit(X_train, y_train)
+clf = DecisionTreeClassifier(max_depth=4).fit(X_train, y_train)
 ```
 
 ```python
@@ -209,7 +209,7 @@ accuracy_score(clf.predict(X_test), y_test)
 from sklearn import tree
 from matplotlib import pyplot as plt
 
-plt.figure(figsize=(60, 60))
+plt.figure(figsize=(20, 20))
            
 tree.plot_tree(clf)
 plt.savefig("../models/tree.png")
@@ -226,7 +226,7 @@ pipeline = Pipeline(
     [
         ('preprocessor', TitanicDataPreprocessor()),
         ('feature_selector', TitanicDataFeatureSelector()),
-        ('classifier', DecisionTreeClassifier()),
+        ('classifier', DecisionTreeClassifier(max_depth=4)),
     ]
 )
 
