@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "bonus_tutorial"
+version = "0.1.0"
+description = ""
+authors = ["Marek Nevole <marek.nevole@datamole.ai>", "Adam Skluzacek <adam.skluzacek@datamole.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+jupyter = "^1.0.0"
+scikit-learn = "^1.4.2"
+fastapi = "^0.111.0"
+streamlit = "^1.34.0"
+pydantic = "^2.7.1"
+pandas = "^2.2.2"
+
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+black = "^24.4.2"
+pylint = "^3.2.0"
+
+[tool.black]
+line-length = 100
+skip-string-normalization = 1
+
+
+[tool.pylint."MESSAGES CONTROL"]
+max-line-length = 100
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "invalid-name"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
