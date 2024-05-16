@@ -24,8 +24,10 @@ def inference_ui():
     st.write("This is the inference page")
     cols = st.columns(3)
     with cols[0]:
-        st.number_input("Age", min_value=0, max_value=100, value=50, key='input__age')
+        st.text_input('Name', key='input__name')
+        st.selectbox('Class', options=[1, 2, 3], key='input__class')
         st.radio('Sex', options=['Male', 'Female'], horizontal=True, key='input__sex')
+        st.number_input('Fare', key='input__fare', min_value=0.0, max_value=1000.0)
         st.button("Predict", key='button__predict')
 
 
@@ -37,7 +39,9 @@ def statistics_ui():
         st.write("No data available")
         return
 
-    st.dataframe(st.session_state.inputs)
+    inputs_df = st.session_state.inputs.copy()
+    inputs_df['prediction'] = st.session_state.predictions
+    st.dataframe(inputs_df)
 
 
 def setup_ui():
@@ -49,24 +53,34 @@ def setup_ui():
 
 
 def infer_model():
-    data = {'age': st.session_state['input__age'], 'sex': st.session_state['input__sex']}
+    # Prepare the data
+    data = {
+        'name': st.session_state.input__name,
+        'class': st.session_state.input__class,
+        'sex': st.session_state.input__sex,
+        'fare': st.session_state.input__fare,
+    }
     endpoint = st.session_state.model_service_url + "/"
+
+    # Call the API
     with st.spinner('Calling the API...'):
         result = requests.get(endpoint, timeout=3)
 
     info_message = st.empty()
     FLASH_DURATION = 1
-
     if result.status_code == 200:
+        # Flash the success message
         info_message.success('Done!')
         time.sleep(FLASH_DURATION)
         info_message.empty()
 
+        # Save the input and prediction
         st.session_state.inputs = pd.concat(
             [st.session_state.inputs, pd.DataFrame([data])], ignore_index=True
         )
         st.session_state.predictions.append(result.json())
     else:
+        # Flash the error message
         info_message.error('Error:', result.status_code)
         time.sleep(FLASH_DURATION)
         info_message.empty()
@@ -79,8 +93,9 @@ def handle_logic():
 
 def main():
     setup_state()
-    setup_ui()
     handle_logic()
+    setup_ui()
+    print(st.session_state)
 
 
 if __name__ == "__main__":
