@@ -15,6 +15,7 @@ pydantic = "^2.7.1"
 pandas = "^2.2.2"
 python-dotenv = "^1.0.1"
 plotly = "^5.22"
+matplotlib = "^3.9"
 
 
 [tool.poetry.group.dev.dependencies]

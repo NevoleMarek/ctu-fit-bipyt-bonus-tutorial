@@ -174,6 +174,7 @@ class TitanicDataFeatureSelector(BaseEstimator, TransformerMixin):
         pass
 
     def fit(self, X, y=None):
+        correlations = X.corrwith(y)
         self._selected_feature_columns = list(correlations.abs().nlargest(4).index)
         return self
 
@@ -182,7 +183,7 @@ class TitanicDataFeatureSelector(BaseEstimator, TransformerMixin):
 ```
 
 ```python
-titanic_data_feature_selector = TitanicDataFeatureSelector().fit(X_train)
+titanic_data_feature_selector = TitanicDataFeatureSelector().fit(X_train, y_train)
 ```
 
 ```python
@@ -194,12 +195,24 @@ X_test = titanic_data_feature_selector.transform(X_test)
 X_train.head()
 ```
 
+# Modeling
+
 ```python
-clf = DecisionTreeClassifier().fit(X_train, y_train)
+clf = DecisionTreeClassifier(max_depth=4).fit(X_train, y_train)
 ```
 
 ```python
 accuracy_score(clf.predict(X_test), y_test)
+```
+
+```python
+from sklearn import tree
+from matplotlib import pyplot as plt
+
+plt.figure(figsize=(20, 20))
+           
+tree.plot_tree(clf)
+plt.savefig("../models/tree.png")
 ```
 
 ```python
@@ -213,7 +226,7 @@ pipeline = Pipeline(
     [
         ('preprocessor', TitanicDataPreprocessor()),
         ('feature_selector', TitanicDataFeatureSelector()),
-        ('classifier', DecisionTreeClassifier()),
+        ('classifier', DecisionTreeClassifier(max_depth=4)),
     ]
 )
 
